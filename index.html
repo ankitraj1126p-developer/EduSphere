@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduSphere - Student Management</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <h2 class="logo">Edu<span>Sphere</span></h2>
+
+    <nav>
+      <a href="#" class="nav active" data-page="dashboard">▦ Dashboard</a>
+      <a href="#" class="nav" data-page="students">♙ Students</a>
+      <a href="#" class="nav" data-page="attendance">◷ Attendance</a>
+      <a href="#" class="nav" data-page="marks">▤ Marks & Grades</a>
+      <a href="#" class="nav" data-page="fees">₹ Fee Management</a>
+      <a href="#" class="nav" data-page="assignments">✎ Assignments</a>
+      <a href="#" class="nav" data-page="calendar">▦ Calendar</a>
+      <a href="#" class="nav" data-page="activity">↻ Activity Log</a>
+    </nav>
+
+    <button id="theme-toggle" class="nav theme-btn">☾ Dark Mode</button>
+    <div class="admin">A &nbsp; Administrator</div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <button id="menu" class="menu">☰</button>
+      <h3 id="page-title">Dashboard</h3>
+
+      <div class="top-actions">
+        <input id="global-search" placeholder="Search students...">
+        <button id="notifications">♧</button>
+        <span id="today"></span>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <section class="page active" id="page-dashboard">
+        <div class="heading">
+          <div>
+            <small>OVERVIEW</small>
+            <h1>Welcome back, Admin ✦</h1>
+            <p>Here's what's happening at your institution.</p>
+          </div>
+          <button class="primary" data-add-student>+ Add Student</button>
+        </div>
+
+        <div class="stats">
+          <article>
+            <span>Total Students</span>
+            <h2 id="total-students">0</h2>
+          </article>
+          <article>
+            <span>Present Today</span>
+            <h2 id="present-count">0</h2>
+          </article>
+          <article>
+            <span>Total Courses</span>
+            <h2 id="course-count">0</h2>
+          </article>
+          <article>
+            <span>Pending Fees</span>
+            <h2 id="pending-fees">₹0</h2>
+          </article>
+        </div>
+
+        <div class="grid">
+          <div class="panel">
+            <h3>Student Distribution</h3>
+            <canvas id="course-chart"></canvas>
+          </div>
+          <div class="panel">
+            <h3>Attendance Overview</h3>
+            <canvas id="attendance-chart"></canvas>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="panel">
+            <h3>Recent Students</h3>
+            <div id="recent-students">No students yet.</div>
+          </div>
+          <div class="panel">
+            <h3>Upcoming Events</h3>
+            <div id="upcoming-events">No events yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STUDENTS -->
+      <section class="page" id="page-students">
+        <div class="heading">
+          <div>
+            <small>DIRECTORY</small>
+            <h1>Student Management</h1>
+            <p>Manage student records.</p>
+          </div>
+          <button class="primary" data-add-student>+ Add Student</button>
+        </div>
+
+        <div class="toolbar panel">
+          <input id="student-search" placeholder="Search name, email or ID">
+          <select id="course-filter">
+            <option value="">All Courses</option>
+          </select>
+          <select id="sort">
+            <option value="newest">Newest First</option>
+            <option value="name">Name A-Z</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+          <button class="secondary" id="export-csv">Export CSV</button>
+          <label class="secondary upload">Import CSV
+            <input type="file" id="import-csv" accept=".csv" hidden>
+          </label>
+          <button class="secondary" id="backup">Backup JSON</button>
+          <label class="secondary upload">Restore JSON
+            <input type="file" id="restore" accept=".json" hidden>
+          </label>
+        </div>
+
+        <div class="panel table-panel">
+          <div class="scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>STUDENT</th>
+                  <th>ID</th>
+                  <th>COURSE</th>
+                  <th>YEAR</th>
+                  <th>PHONE</th>
+                  <th>ATTENDANCE</th>
+                  <th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="students-table"></tbody>
+            </table>
+          </div>
+          <p id="student-count"></p>
+          <button class="link" id="clear-filters">Clear filters</button>
+        </div>
+      </section>
+
+      <!-- ATTENDANCE -->
+      <section class="page" id="page-attendance">
+        <div class="heading">
+          <div>
+            <small>DAILY TRACKING</small>
+            <h1>Attendance Manager</h1>
+          </div>
+          <input type="date" id="attendance-date">
+        </div>
+
+        <div class="stats three">
+          <article><span>Present</span><h2 id="att-present">0</h2></article>
+          <article><span>Absent</span><h2 id="att-absent">0</h2></article>
+          <article><span>Attendance Rate</span><h2 id="att-rate">0%</h2></article>
+        </div>
+
+        <div class="panel">
+          <h3>Mark Attendance</h3>
+          <button class="secondary" id="mark-all">Mark All Present</button>
+          <div id="attendance-list"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Attendance History</h3>
+          <div class="scroll">
+            <table>
+              <thead><tr><th>Student</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="attendance-history"></tbody>
+            </table>
+          </div>
+          <button class="secondary" id="attendance-export">Export History</button>
+        </div>
+      </section>
+
+      <!-- MARKS -->
+      <section class="page" id="page-marks">
+        <div class="heading">
+          <div><small>ACADEMICS</small><h1>Marks & Grades</h1></div>
+          <button class="primary" id="add-mark">+ Add Marks</button>
+        </div>
+        <div class="panel scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th><th>Subject</th><th>Marks</th>
+                <th>Maximum</th><th>Percentage</th><th>Grade</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="marks-table"></tbody>
+          </table>
+          <p id="marks-empty">No marks added.</p>
+        </div>
+      </section>
+
+      <!-- FEES -->
+      <section class="page" id="page-fees">
+        <div class="heading">
+          <div><small>FINANCE</small><h1>Fee Management</h1></div>
+          <button class="primary" id="add-fee">+ Add Fee Record</button>
+        </div>
+
+        <div class="stats three">
+          <article><span>Total Fees</span><h2 id="fee-total">₹0</h2></article>
+          <article><span>Collected</span><h2 id="fee-paid">₹0</h2></article>
+          <article><span>Outstanding</span><h2 id="fee-due">₹0</h2></article>
+        </div>
+
+        <div class="panel scroll">
+          <table>
+            <thead>
+              <tr><th>Student</th><th>Total</th><th>Paid</th><th>Due</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="fees-table"></tbody>
+          </table>
+          <p id="fees-empty">No fee records.</p>
+        </div>
+      </section>
+
+      <!-- ASSIGNMENTS -->
+      <section class="page" id="page-assignments">
+        <div class="heading">
+          <div><small>CLASSROOM</small><h1>Assignments</h1></div>
+          <button class="primary" id="add-assignment">+ Create Assignment</button>
+        </div>
+        <div id="assignment-grid" class="assignment-grid"></div>
+      </section>
+
+      <!-- CALENDAR -->
+      <section class="page" id="page-calendar">
+        <div class="heading">
+          <div><small>PLANNER</small><h1>Academic Calendar</h1></div>
+          <button class="primary" id="add-event">+ Add Event</button>
+        </div>
+        <div class="panel">
+          <h3>Upcoming Events</h3>
+          <div id="event-list"></div>
+        </div>
+      </section>
+
+      <!-- ACTIVITY -->
+      <section class="page" id="page-activity">
+        <div class="heading">
+          <div><small>AUDIT TRAIL</small><h1>Activity Log</h1></div>
+          <button class="secondary" id="clear-activity">Clear History</button>
+        </div>
+        <div class="panel" id="activity-list"></div>
+      </section>
+
+      <footer>EduSphere · InternNova Week 06 Project</footer>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="backdrop" id="backdrop">
+  <div class="modal">
+    <div class="modal-title">
+      <div>
+        <small id="modal-eyebrow">DETAILS</small>
+        <h2 id="modal-heading">Add Record</h2>
+      </div>
+      <button id="close-modal">×</button>
+    </div>
+    <form id="modal-form">
+      <div id="modal-fields" class="fields"></div>
+      <div class="modal-actions">
+        <button type="button" class="secondary" id="cancel-modal">Cancel</button>
+        <button type="submit" class="primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="notifications" id="notification-panel">
+  <div class="panel-title">
+    <h3>Notifications</h3>
+    <button class="link" id="clear-notifications">Clear</button>
+  </div>
+  <div id="notification-list"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+</body>
+</html>
