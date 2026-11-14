@@ -48,9 +48,7 @@ This project was developed as part of the **InternNova Week 6 Web Development In
 3. Open `index.html` in your browser.
 4. Start using the EduSphere Student Management System.
 
-## 🌐 Live Demo 
-
-**GitHub Pages:** Add your deployed website URL here.
+## 🌐 Live Demo : https://edusphere-liard-two.vercel.app/
 
 ## 📚 What I Learned
 
