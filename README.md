@@ -37,19 +37,7 @@ This project was developed as part of the **InternNova Week 6 Web Development In
 | GitHub | Code hosting |
 | GitHub Pages | Website deployment |
 
-## 📸 Project Screenshots
 
-### Dashboard
-![EduSphere Dashboard](screenshots/dashboard.png)
-
-### Student Management
-![Student Management](screenshots/students.png)
-
-### Attendance Management
-![Attendance Management](screenshots/attendance.png)
-
-### Marks & Grades
-![Marks and Grades](screenshots/marks.png)
 
 > Create a folder named `screenshots` in your project directory. Save your actual website screenshots there using the filenames shown above.
 
@@ -60,7 +48,7 @@ This project was developed as part of the **InternNova Week 6 Web Development In
 3. Open `index.html` in your browser.
 4. Start using the EduSphere Student Management System.
 
-## 🌐 Live Demo
+## 🌐 Live Demo 
 
 **GitHub Pages:** Add your deployed website URL here.
 
